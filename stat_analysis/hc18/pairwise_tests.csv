@@ -1,0 +1,4 @@
+group1,group2,U_stat,p_raw,p_bonferroni,significant
+senior,junior,1492.0,0.6607471014390942,1.0,False
+senior,non-expert,1793.5,0.7711062254843805,1.0,False
+junior,non-expert,1753.0,0.4436692854971137,1.0,False

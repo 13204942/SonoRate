@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Ranking App</title>
+  <style>
+    .image-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .image-box {
+      text-align: center;
+    }
+    img {
+      width: 100%;       /* take full cell width */
+      height: auto;      /* keep aspect ratio */
+      object-fit: contain; /* prevent distortion */
+      max-height: 250px; /* adjust as needed */
+      border: 2px solid white;
+    }
+    .small-row img {
+      width: 100%;          /* fill the cell width */
+      height: auto;         /* let height adjust naturally */
+      max-height: 250px;    /* limit height so they stay consistent */
+      object-fit: contain;  /* show full image, no cropping */
+      border: 2px solid white;
+    }    
+
+  </style>
+</head>
+<body>
+  <h1>Rank the Images (1-5)</h1>
+  <div class="image-grid" id="imageGrid"></div>
+  <button onclick="saveResults()">Save Results</button>
+  <button onclick="prevCase()">Previous Case</button>
+  <button onclick="nextCase()">Next Case</button>
+
+  <script>
+    let cases = [];
+    let currentCase = 0;
+
+    async function loadCasesFromFile() {
+      try {
+        const response = await fetch("images_estt.txt");
+        if (!response.ok) {
+          throw new Error("Could not load images.txt");
+        }
+        const text = await response.text();
+        cases = text
+          .trim()
+          .split("\n")
+          .map(line => line.split(",").map(path => path.trim()));
+
+        console.log("Loaded cases:", cases); // Debug
+        console.log("Raw text from file:", JSON.stringify(text))
+        console.log("Parsed cases array:", cases)
+        loadCase(currentCase);
+      } catch (err) {
+        console.error("Error loading cases:", err);
+      }
+    }
+
+    function loadCase(idx) {
+      if (!cases[idx]) {
+        alert("No more cases!");
+        return;
+      }
+
+      const grid = document.getElementById("imageGrid");
+      grid.innerHTML = "";
+
+      // const layout = [2, 3, 2]; // row1=2, row2=3, row3=2
+      const layout = [1, 3, 2]; // row1=2, row2=3, row3=2
+      let imgIndex = 0;
+
+      layout.forEach((cols, rowIndex) => {
+        const row = document.createElement("div");
+        row.style.display = "grid";
+        row.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        row.style.gap = "10px";
+        row.style.marginBottom = "15px";
+
+        if (rowIndex > 0) {
+          row.classList.add("small-row"); // styling for row 2 & 3
+        }
+
+        for (let i = 0; i < cols; i++) {
+          if (imgIndex >= cases[idx].length) break;
+
+          const src = cases[idx][imgIndex];
+          const filename = src.split("/").pop(); // extract filename only
+
+          const box = document.createElement("div");
+          box.className = "image-box";
+
+          // Row 1 → show filename, no rank
+          if (rowIndex === 0) {
+            box.innerHTML = `
+              <img src="${src}" alt="Image ${imgIndex + 1}" 
+                  onerror="this.style.border='2px solid red'; this.alt='Not found';">
+              <br>
+              <span style="font-weight:bold">${filename}</span>
+            `;
+          } 
+          // Rows 2 & 3 → keep rank input
+          else {
+            box.innerHTML = `
+              <img src="${src}" alt="Image ${imgIndex + 1}" 
+                  onerror="this.style.border='2px solid red'; this.alt='Not found';">
+              <br>
+              Rank: <input type="number" min="1" max="5" id="rank${imgIndex}">
+            `;
+          }
+
+          row.appendChild(box);
+          imgIndex++;
+        }
+
+        grid.appendChild(row);
+      });
+    }
+
+    function saveResults() {
+      if (!cases[currentCase]) return;
+
+      const images = cases[currentCase];   // array of image paths for this case
+      const lines = [];
+
+      for (let i = 0; i < images.length; i++) {
+        const src = images[i];
+        const filename = src.split("/").pop();  // get only the file name
+
+        // try to find a rank input for this image
+        const input = document.getElementById(`rank${i}`);
+        const rank = input ? (input.value || "") : "";  // empty if no input (e.g. reference image)
+
+        // add "filename,rank" row
+        lines.push(`${filename},${rank}`);
+      }
+
+      // Build CSV content: case line + header + rows
+      const header = `Case ${currentCase + 1}\nImage,Rank\n`;
+      const data = header + lines.join("\n") + "\n";
+
+      const blob = new Blob([data], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `results_case_${currentCase + 1}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      alert("Results are saved!");
+    }
+
+    function nextCase() {
+      if (currentCase + 1 >= cases.length) {
+        alert("Reached last case!");
+        return;
+      }
+      currentCase++;
+      loadCase(currentCase);
+    }
+
+    function prevCase() {
+      if (currentCase - 1 < 0) {
+        alert("Already at the first case!");
+        return;
+      }
+      currentCase--;
+      loadCase(currentCase);
+    }
+
+    // Initialize
+    loadCasesFromFile();
+  </script>
+</body>
+</html>

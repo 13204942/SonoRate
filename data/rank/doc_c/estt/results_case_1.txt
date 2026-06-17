@@ -1,0 +1,8 @@
+Case 1
+Image,Rank
+Patient00794_Plane3_3_of_3.png,
+Patient00794_Plane3_3_of_3_overlay4.png,4
+Patient00794_Plane3_3_of_3_overlay3.png,4
+Patient00794_Plane3_3_of_3_overlay2.png,2
+Patient00794_Plane3_3_of_3_overlay1.png,1
+Patient00794_Plane3_3_of_3_overlay5.png,4

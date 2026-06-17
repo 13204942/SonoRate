@@ -1,0 +1,8 @@
+Case 1
+Image,Rank
+001_HC.png,
+001_HC_overlay3.png,2
+001_HC_overlay5.png,5
+001_HC_overlay1.png,3
+001_HC_overlay2.png,2
+001_HC_overlay4.png,5
