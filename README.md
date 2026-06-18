@@ -95,6 +95,13 @@ SonoRate/
 └── top1 selection frequency plot.py    # Top-1 frequency plots
 ```
 
+## Acknowledgements
+
+We thank the developers of the VGG Image Annotator (VIA) for making their annotation framework openly available. The web-based rating interface in SonoRate was developed based on VIA and adapted for clinician-centred evaluation and ranking tasks in ultrasound AI studies.
+
+VIA repository: https://github.com/ox-vgg/via
+
+
 ## Citation
 
 If you use SonoRate in your research, please cite our MIUA 2026 paper.
