@@ -105,3 +105,15 @@ VIA repository: https://github.com/ox-vgg/via
 ## Citation
 
 If you use SonoRate in your research, please cite our MIUA 2026 paper.
+```
+@misc{wang:2026,
+    title={A Clinician-Centered Pipeline for Annotation and Evaluation in Ultrasound AI Studies}, 
+    author={Fangyijie Wang and Jianjun Yu and Wentao Shi and Haixia Huang and Ran Shi and Guénolé Silvestre and Kathleen M. Curran},
+    year={2026},
+    eprint={2606.19174},
+    archivePrefix={arXiv},
+    primaryClass={cs.HC},
+    doi={10.48550/arXiv.2606.19174},
+    url={https://arxiv.org/abs/2606.19174}, 
+}
+```
